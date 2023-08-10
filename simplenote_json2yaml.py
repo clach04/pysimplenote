@@ -11,18 +11,24 @@ import string
 import sys
 from zipfile import ZipFile, ZIP_DEFLATED
 
-import yaml
+import yaml  # pip install pyyaml==3.12  (for python2 and 3 support - TODO requirements.txt)
 
 
-def dict2yaml(notes_dict):
+def dict2yaml(notes_dict, filename='debug.yaml'):
     notes = {}
-    for note_entry in notes_dict['activeNotes']
+    for note_entry in notes_dict['activeNotes']:
         notes[note_entry['id']] = note_entry
-    filename = 'debug.yaml'
     f = open(filename, 'wb')
-    yaml_str = yaml.dump(notes)
+    yaml_str = yaml.safe_dump(notes, default_flow_style=False)  # keys will be sorted
     f.write(yaml_str)
     f.close()
+
+    """
+    filename = 'debug.json'
+    f = open(filename, 'wb')
+    f.write(json.dumps(notes, indent=4))
+    f.close()
+    """
 
 
 def main(argv=None):
@@ -31,6 +37,24 @@ def main(argv=None):
 
     filename = ''
     filename = argv[1]
+
+    if filename.lower().endswith('.json'):
+        print('Checking json ONLY')
+        print('-' * 65)
+        f = open(filename, 'rb')
+        json_bytes = f.read()
+        f.close()
+        notes_dict = json.loads(json_bytes)
+    else:
+        # assume a zip file
+        print('Checking json in zip')
+        print('-' * 65)
+        arch = ZipFile(filename, 'r')
+        f = arch.open('source/notes.json')
+        json_bytes = f.read()
+        f.close()
+        notes_dict = json.loads(json_bytes)
+    dict2yaml(notes_dict, filename=filename+'.yaml')
 
 
     return 0
