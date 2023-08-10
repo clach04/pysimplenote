@@ -31,17 +31,26 @@ import sys
 from zipfile import ZipFile, ZIP_DEFLATED
 
 
+def report_on_dupes(filename_dict):
+    for filename in filename_dict:
+        if len(filename_dict[filename]) > 1:
+            print('dupe %r x%d - %r' % (filename, len(filename_dict[filename]), filename_dict[filename]))
+
 def check_notes_zip(archname, simulate=True):
     assert simulate
     filenames = {}
     arch = ZipFile(archname, 'r')
     for orig_path in arch.namelist():
         filename = orig_path.lower()
-        if filenames.get(filename):
+        id_list = filenames.get(filename, [])
+        if id_list:
             print('found a duplicate: lower: %r - %r and %r' % (filename, orig_path, filenames[filename]))
-        else:
-            filenames[filename] = orig_path
+        id_list.append((orig_path, ))
+        filenames[filename] = id_list
 
+
+    print('*' * 34)
+    report_on_dupes(filenames)
 
 def check_json_entries(archname, simulate=True):
     assert simulate
@@ -102,6 +111,8 @@ def check_notes_dict(notes_dict):
             print('found a duplicate: lower: %r - %r and %r' % (filename, orig_path, filenames[filename]))
         id_list.append((orig_path, note_entry['id']))
         filenames[filename] = id_list
+    print('*' * 34)
+    report_on_dupes(filenames)
 
 
 
