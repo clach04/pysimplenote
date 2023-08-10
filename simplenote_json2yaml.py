@@ -17,6 +17,7 @@ import yaml  # pip install pyyaml==3.12  (for python2 and 3 support - TODO requi
 def dict2yaml(notes_dict, filename='debug.yaml'):
     notes = {}
     for note_entry in notes_dict['activeNotes']:
+        note_entry['content'] = note_entry['content'].replace('\r', '')  # I don't use a Mac, I've no idea if this will break Mac
         notes[note_entry['id']] = note_entry
     f = open(filename, 'wb')
     yaml_str = yaml.safe_dump(notes, default_flow_style=False)  # keys will be sorted
