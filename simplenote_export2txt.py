@@ -120,7 +120,7 @@ def main(argv=None):
         use_first_line_as_filename = False
 
     if filename.lower().endswith('.json'):
-        print('Checking json ONLY')
+        print('Extracting from Simplenote raw json file')
         print('-' * 65)
         f = open(filename, 'rb')
         json_bytes = f.read()
@@ -128,7 +128,7 @@ def main(argv=None):
         notes_dict = json.loads(json_bytes)
     else:
         # assume a zip file
-        print('Checking json in zip')
+        print('Extracting from Simplenote json in zip')
         print('-' * 65)
         arch = ZipFile(filename, 'r')
         f = arch.open('source/notes.json')
