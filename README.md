@@ -23,7 +23,7 @@ Works with zip files (NOTE actually uses the json file in the zip and ignores th
 
 ### sanity_check_export
 
-Look for duplicate titles/filenames and notes that are missing (or have suspicious) titles/filenames.
+Look for duplicate titles/filenames and notes that are missing (or have suspicious) titles/filenames (only one line, with no body text).
 Real duplicates or under Microsoft Windows file system allows case for display but is caseless when it compares to storage, for example, `music` versus `Music`)
 
 Checks:
