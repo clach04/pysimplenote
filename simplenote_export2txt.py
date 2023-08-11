@@ -110,8 +110,14 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
 
+    # FIXME proper command line argument processing needed
     filename = ''
     filename = argv[1]
+    try:
+        use_first_line_as_filename = argv[2]
+        use_first_line_as_filename = True
+    except IndexError:
+        use_first_line_as_filename = False
 
     if filename.lower().endswith('.json'):
         print('Checking json ONLY')
@@ -129,7 +135,7 @@ def main(argv=None):
         json_bytes = f.read()
         f.close()
         notes_dict = json.loads(json_bytes)
-    dict2txt(notes_dict, output_directory=filename+'_dir', use_first_line_as_filename=True)
+    dict2txt(notes_dict, output_directory=filename+'_dir', use_first_line_as_filename=use_first_line_as_filename)
 
 
     return 0
