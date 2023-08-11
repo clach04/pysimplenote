@@ -41,7 +41,8 @@ Possible use cases:
 
   * view, print, or even edit in plain text editor
   * synchronize to another filesystem/backend - for example; rsync, FreeFileSync, JSync, rclone, GDrive, OneDrive, ownCloud, Nextcloud, etc.
-  * perform diff - for example; `diff -r`, WinMerge, Meld, etc.
+  * perform diff across different backups/exports - for example; `diff -r`, WinMerge, Meld, etc.
+  * find possible problem notes (duplicate titles/first lines and/or long/single-line notes)
 
 Under windows install pywin32
 
