@@ -47,6 +47,19 @@ Under windows install pywin32
 
     python -m pip install pywin32 --upgrade
 
+Example Usage:
+
+    python simplenote_json2yaml.py note.zip
+    python simplenote_json2yaml.py note.zip use_first_line_as_filename
+
+    python simplenote_json2yaml.py simplenote.json
+    python simplenote_json2yaml.py simplenote.json use_first_line_as_filename
+
+Then look for problem filenames:
+
+  * `ls *__*` - find duplicate filenams (also `ls dupe__*`)
+  * `ls *_.txt` - find truncated/long titles and/or trailing blanks
+
 ### simplenote_json2yaml
 
 Convert/export json file to yaml with indents, sorted on id.
