@@ -11,7 +11,7 @@ Tools for working with:
 
 Python 3 or 2.
 
-Works with zip files (NOTE actually uses the json file in the zip and ignores the text files) and json files.
+Works with either json files or zip export/backup files (NOTE actually uses the json file in the zip and ignores the text files).
 
 ## Getting Started
 
