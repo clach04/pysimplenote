@@ -63,7 +63,9 @@ Then look for problem filenames:
 
 ### simplenote_json2yaml
 
-Convert/export json file to yaml with indents, sorted on id.
+Convert/export json file to yaml with indents, sorted on id. Requires pyyaml:
+
+    pip install pyyaml==3.12
 
 Allows single file diff.
 
