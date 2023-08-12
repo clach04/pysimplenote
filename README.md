@@ -83,6 +83,11 @@ Convert/export json file to yaml with indents, sorted on id. Requires pyyaml:
 
 Allows single file diff.
 
+## Future / TODO ideas
+
+  * https://github.com/clach04/pysimplenote/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement
+
+
 ## Similar/related tools
 
   * https://github.com/siviae/gitjournal-simplenote-exporter
