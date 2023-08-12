@@ -66,7 +66,10 @@ def safe_mkdir(newdir):
 
 def iso_like2datetime(datetime_str):
     """Partial ISO date format parsing, very limited.
-    Focused on Simplenote timestamps format which are UTC / Zulu / GMT0 based
+    Focused on Simplenote timestamps format which are UTC / Zulu / GMT0 based.
+    Currently ignores timezone...
+    For example:
+        iso_like2datetime("2022-06-27T01:39:12.602Z") == datetime.datetime(2022, 6, 27, 1, 39, 12)
     """
     datetime_str = datetime_str.split('.', 1)[0]  # strip fractional seconds and UTC indicator
     return datetime.datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S')
