@@ -106,14 +106,15 @@ def iso_like2secs(datetime_str):
     utctimestamp = email.utils.mktime_tz(date_tuple)
     return utctimestamp
 
-def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_filename=False, file_extension='txt', save_index=True, use_git=False):
+def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_filename=False, file_extension='txt', save_index=True, use_git=False, save_index_include_trashed=True):
     #import pdb ; pdb.set_trace()
     dupe_dict = sanity_check_export.find_duplicate_filenames_dict(notes_dict, generate_file_name=sanity_check_export.safe_filename)
     if save_index:
         new_index = {
-            'trashedNotes': notes_dict['trashedNotes'],  # include trashed/deleted notes (for now), including actual content  # TODO make optional
             'activeNotes': {},  # this will be the note metadata without the content (and additional "filename")
         }
+        if save_index_include_trashed:
+            new_index['trashedNotes'] = notes_dict['trashedNotes'],  # include trashed/deleted notes, including actual content
 
     safe_mkdir(output_directory)
     if use_git:
@@ -169,6 +170,16 @@ def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_
         f.close()
 
 
+def force_bool(in_bool):
+    """Force string value into a Python boolean value
+    Everything is True with the exception of; false, off, no, and 0"""
+    value = str(in_bool).lower()
+    if value in ('false', 'off', 'no', '0'):
+        return False
+    else:
+        return True
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -185,15 +196,23 @@ def main(argv=None):
         use_first_line_as_filename = os.environ.get('SIMPLENOTE_READABLE_FILENAMES')
     use_git = os.environ.get('SIMPLENOTE_USE_GIT')  # NOTE this is VERY slow (with Dulwich)
     #use_git = True  # DEBUG - this is VERY slow
+
+    save_index = force_bool(os.environ.get('SIMPLENOTE_SAVE_INDEX', True))  # default is to save everything
+    save_index_include_trashed = force_bool(os.environ.get('SIMPLENOTE_SAVE_INDEX_TRASHED', True))  # default is to save everything
+
     """setting env vars:
 
         export SIMPLENOTE_READABLE_FILENAMES=true
         export SIMPLENOTE_USE_GIT=true
+        export SIMPLENOTE_SAVE_INDEX=false
+        export SIMPLENOTE_SAVE_INDEX_TRASHED=false
 
         env SIMPLENOTE_READABLE_FILENAMES=true SIMPLENOTE_USE_GIT=true python simplenote_export2txt.py export_filename
 
         set SIMPLENOTE_READABLE_FILENAMES=true
         set SIMPLENOTE_USE_GIT=true
+        set SIMPLENOTE_SAVE_INDEX=false
+        set SIMPLENOTE_SAVE_INDEX_TRASHED=false
 
     """
 
@@ -213,7 +232,7 @@ def main(argv=None):
         json_bytes = f.read()
         f.close()
         notes_dict = json.loads(json_bytes)
-    dict2txt(notes_dict, output_directory=filename+'_dir', use_first_line_as_filename=use_first_line_as_filename, use_git=use_git)
+    dict2txt(notes_dict, output_directory=filename+'_dir', use_first_line_as_filename=use_first_line_as_filename, use_git=use_git, save_index=save_index, save_index_include_trashed=save_index_include_trashed)
 
 
     return 0
