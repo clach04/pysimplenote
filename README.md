@@ -75,6 +75,11 @@ Then look for problem filenames:
   * `ls *__*` - find duplicate filenams (also `ls dupe__*`)
   * `ls *_.txt` - find truncated/long titles and/or trailing blanks
 
+#### Git notes
+
+Git support is via Dulwich and is not super fast, also the initial repo will be large.
+Example, 3.2M json file, ends up as git repo + checkout of 48M. This repo pushed to a modern git server and re-cloned will be 8.6M as repo+checkout.
+
 ### simplenote_json2yaml
 
 Convert/export json file to yaml with indents, sorted on id. Requires pyyaml:
