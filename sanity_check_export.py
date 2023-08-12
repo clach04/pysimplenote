@@ -201,9 +201,12 @@ def check_notes_dict(notes_dict):
         'creationDate',  # ISO/ANSI format string UTC
         'lastModified',  # ISO/ANSI format string UTC
         #'markdown',  # Boolean - NOTE optional?
+        #'tags',  # list/array of strings
     ]
     if 'markdown' in note_keys:
         note_keys_expected.append('markdown')
+    if 'tags' in note_keys:
+        note_keys_expected.append('tags')
     note_keys_expected.sort()
     assert note_keys_expected == note_keys, (note_keys_expected, note_keys)
 
