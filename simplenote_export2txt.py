@@ -29,6 +29,13 @@ from zipfile import ZipFile, ZIP_DEFLATED
 is_win = sys.platform.startswith('win')
 
 try:
+    # NOTE as of 2023-08-12 latest Dulwich (0, 20, 2) appears to need Python 3.7+
+    import dulwich  # pip install dulwich==0.19.16 --global-option="--pure"
+    import dulwich.repo
+except ImportError:
+    dulwich = None
+
+try:
     #python -m pip install pywin32 --upgrade
     import pywintypes
     import win32con
@@ -99,7 +106,7 @@ def iso_like2secs(datetime_str):
     utctimestamp = email.utils.mktime_tz(date_tuple)
     return utctimestamp
 
-def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_filename=False, file_extension='txt', save_index=True):
+def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_filename=False, file_extension='txt', save_index=True, use_git=False):
     #import pdb ; pdb.set_trace()
     dupe_dict = sanity_check_export.find_duplicate_filenames_dict(notes_dict, generate_file_name=sanity_check_export.safe_filename)
     if save_index:
@@ -109,8 +116,12 @@ def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_
         }
 
     safe_mkdir(output_directory)
+    if use_git:
+        repo = dulwich.repo.Repo.init(output_directory)  # create new git repo
+
     notes = {}
-    for note_entry in notes_dict['activeNotes']:
+    # TODO progress bar?
+    for note_count, note_entry in enumerate(notes_dict['activeNotes']):
         # handle platform format differences with newlines/linefeeds
         note_entry['content'] = note_entry['content'].replace('\r', '')  # I don't use an Apple Mac, I've no idea if this will break OS X - works for Windows, Linux, and Android
         filename = note_entry['id']
@@ -124,23 +135,32 @@ def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_
         # TODO check for markdown and potentially change/set file_extension?
         if file_extension:
             filename = filename + '.' + file_extension
-        filename = os.path.join(output_directory, filename)
+        filename_full = os.path.join(output_directory, filename)
         st_atime = time.time()  # current time for; Time of most recent access expressed in seconds.
         st_mtime = iso_like2secs(note_entry['lastModified'])  # Time of most recent content modification expressed in seconds.
         if windows_set_create_time:
             created_time = iso_like2secs(note_entry['creationDate'])
-        f = open(filename, 'wb')
+        f = open(filename_full, 'wb')
         f.write(note_entry['content'].encode('utf-8'))
         f.close()
         # modify file timestamp(s)
-        os.utime(filename, (st_atime, st_mtime))
+        os.utime(filename_full, (st_atime, st_mtime))
         if windows_set_create_time:
             #
-            windows_set_create_time(filename, created_time)
+            windows_set_create_time(filename_full, created_time)
+
         if save_index:
             del note_entry['content']
             note_entry['filename'] = safe_filename
             new_index['activeNotes'][note_entry['id']] = note_entry
+
+        if use_git:
+            repo.stage([filename.encode('utf-8')])
+            #commit_message = safe_filename
+            commit_message = 'Note id=%s\n\n%s\n' % (note_entry['id'], json.dumps(note_entry, indent=1))
+            commit_id = repo.do_commit(commit_message.encode('utf-8'), author=b"Some User <email@address.domain>", commit_timestamp=st_mtime, commit_timezone=0)
+            #if note_count >= 3: break  # DEBUG for performance
+
     if save_index:
         filename = os.path.join(output_directory, 'simplenote_index.json')
         f = open(filename, 'wb')
@@ -162,6 +182,7 @@ def main(argv=None):
         use_first_line_as_filename = True
     except IndexError:
         use_first_line_as_filename = False
+    #use_git = True  # DEBUG - this is VERY slow
 
     if filename.lower().endswith('.json'):
         print('Extracting from Simplenote raw json file')
@@ -179,7 +200,7 @@ def main(argv=None):
         json_bytes = f.read()
         f.close()
         notes_dict = json.loads(json_bytes)
-    dict2txt(notes_dict, output_directory=filename+'_dir', use_first_line_as_filename=use_first_line_as_filename)
+    dict2txt(notes_dict, output_directory=filename+'_dir', use_first_line_as_filename=use_first_line_as_filename, use_git=use_git)
 
 
     return 0
