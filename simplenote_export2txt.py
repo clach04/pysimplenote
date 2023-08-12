@@ -71,10 +71,14 @@ def iso_like2datetime(datetime_str):
     datetime_str = datetime_str.split('.', 1)[0]  # strip fractional seconds and UTC indicator
     return datetime.datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S')
 
-def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_filename=False, file_extension='txt'):
+def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_filename=False, file_extension='txt', save_index=True):
     #import pdb ; pdb.set_trace()
-    if use_first_line_as_filename:
-        dupe_dict = sanity_check_export.find_duplicate_filenames_dict(notes_dict, generate_file_name=sanity_check_export.safe_filename)
+    dupe_dict = sanity_check_export.find_duplicate_filenames_dict(notes_dict, generate_file_name=sanity_check_export.safe_filename)
+    if save_index:
+        new_index = {
+            'trashedNotes': notes_dict['trashedNotes'],  # include trashed/deleted notes (for now), including actual content  # TODO make optional
+            'activeNotes': {},  # this will be the note metadata without the content (and additional "filename")
+        }
 
     safe_mkdir(output_directory)
     notes = {}
@@ -82,11 +86,12 @@ def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_
         # handle platform format differences with newlines/linefeeds
         note_entry['content'] = note_entry['content'].replace('\r', '')  # I don't use an Apple Mac, I've no idea if this will break OS X - works for Windows, Linux, and Android
         filename = note_entry['id']
+        first_line = note_entry['content'].split('\n', 1)[0]
+        safe_filename = sanity_check_export.safe_filename(first_line)
+        if safe_filename.lower() in dupe_dict:
+            safe_filename = 'dupe__' + safe_filename.lower() + '__' + note_entry['id']  # TODO review if should use lower in generated final name for dupes?
         if use_first_line_as_filename:
-            first_line = note_entry['content'].split('\n', 1)[0]
-            filename = sanity_check_export.safe_filename(first_line)
-            if filename.lower() in dupe_dict:
-                filename = 'dupe__' + filename.lower() + '__' + note_entry['id']  # TODO review if should use lower in generated final name for dupes?
+            filename = safe_filename
 
         # TODO check for markdown and potentially change/set file_extension?
         if file_extension:
@@ -104,6 +109,15 @@ def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_
         os.utime(filename, (st_atime, st_mtime))
         if windows_set_create_time:
             windows_set_create_time(filename, created_time)
+        if save_index:
+            del note_entry['content']
+            note_entry['filename'] = safe_filename
+            new_index['activeNotes'][note_entry['id']] = note_entry
+    if save_index:
+        filename = os.path.join(output_directory, 'simplenote_index.json')
+        f = open(filename, 'wb')
+        f.write(json.dumps(new_index, indent=1).encode('utf-8'))  # small indent for debugging purposes
+        f.close()
 
 
 def main(argv=None):
