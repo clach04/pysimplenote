@@ -152,6 +152,8 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
 
+    print('Python %s on %s' % (sys.version, sys.platform))
+
     # FIXME proper command line argument processing needed
     filename = ''
     filename = argv[1]
