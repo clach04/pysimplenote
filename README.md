@@ -63,11 +63,13 @@ Example Usage:
 Alternative options via operating system environment variables:
 
         export SIMPLENOTE_READABLE_FILENAMES=true
+        # recommend using import_files_to_git.py and leave false/unset
         export SIMPLENOTE_USE_GIT=true
 
         env SIMPLENOTE_READABLE_FILENAMES=true SIMPLENOTE_USE_GIT=true python simplenote_export2txt.py export_filename
 
         set SIMPLENOTE_READABLE_FILENAMES=true
+        :: recommend using import_files_to_git.py and leave false/unset
         set SIMPLENOTE_USE_GIT=true
 
 Then look for problem filenames:
@@ -79,6 +81,13 @@ Then look for problem filenames:
 
 Git support is via Dulwich and is not super fast, also the initial repo will be large.
 Example, 3.2M json file, ends up as git repo + checkout of 48M. This repo pushed to a modern git server and re-cloned will be 8.6M as repo+checkout.
+
+One one machine that same json file takes 0.6 seconds to extract, with Dulwich git enabled takes 6 mins and 17 seconds.
+Same git import with git command line tool takes 37 seconds, repo+checkout is 49M.
+
+ALSO NOTE commit order is in file order (in json file), not last modified orded.
+
+Alternative, disable git support and use `import_files_to_git.py` to generate a script that will create the git repo with correct
 
 ### simplenote_json2yaml
 
