@@ -71,4 +71,7 @@ Allows single file diff.
 
 ## Similar/related tools
 
-  * https://github.com/siviae/gitjournal-simplenote-exporter (I've not tested this)
+  * https://github.com/siviae/gitjournal-simplenote-exporter
+    NOTE expects zip files ONLY (not json, like from Android).
+    Problems:
+      * does not generate safe filenames (e.g. `/`)
