@@ -194,7 +194,7 @@ def main(argv=None):
         use_first_line_as_filename = True
     except IndexError:
         use_first_line_as_filename = os.environ.get('SIMPLENOTE_READABLE_FILENAMES')
-    use_git = os.environ.get('SIMPLENOTE_USE_GIT')  # NOTE this is VERY slow (with Dulwich)
+    use_git = force_bool(os.environ.get('SIMPLENOTE_USE_GIT'))  # NOTE this generates commit order which confuses GitJournal and is VERY slow (with Dulwich)
     #use_git = True  # DEBUG - this is VERY slow
 
     save_index = force_bool(os.environ.get('SIMPLENOTE_SAVE_INDEX', True))  # default is to save everything
