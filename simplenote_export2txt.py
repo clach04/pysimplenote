@@ -158,7 +158,8 @@ def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_
             repo.stage([filename.encode('utf-8')])
             #commit_message = safe_filename
             commit_message = 'Note id=%s\n\n%s\n' % (note_entry['id'], json.dumps(note_entry, indent=1))
-            commit_id = repo.do_commit(commit_message.encode('utf-8'), author=b"Some User <email@address.domain>", commit_timestamp=st_mtime, commit_timezone=0)
+            # NOTE committing files in the order seen, not in date order
+            commit_id = repo.do_commit(commit_message.encode('utf-8'), author=b"Some User <email@address.domain>", commit_timestamp=st_mtime, commit_timezone=0)  # TODO pick up author from env (and document it)
             #if note_count >= 3: break  # DEBUG for performance
 
     if save_index:
@@ -181,8 +182,20 @@ def main(argv=None):
         use_first_line_as_filename = argv[2]
         use_first_line_as_filename = True
     except IndexError:
-        use_first_line_as_filename = False
+        use_first_line_as_filename = os.environ.get('SIMPLENOTE_READABLE_FILENAMES')
+    use_git = os.environ.get('SIMPLENOTE_USE_GIT')  # NOTE this is VERY slow (with Dulwich)
     #use_git = True  # DEBUG - this is VERY slow
+    """setting env vars:
+
+        export SIMPLENOTE_READABLE_FILENAMES=true
+        export SIMPLENOTE_USE_GIT=true
+
+        env SIMPLENOTE_READABLE_FILENAMES=true SIMPLENOTE_USE_GIT=true python simplenote_export2txt.py export_filename
+
+        set SIMPLENOTE_READABLE_FILENAMES=true
+        set SIMPLENOTE_USE_GIT=true
+
+    """
 
     if filename.lower().endswith('.json'):
         print('Extracting from Simplenote raw json file')
