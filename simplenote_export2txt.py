@@ -166,7 +166,7 @@ def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_
     if save_index:
         filename = os.path.join(output_directory, 'simplenote_index.json')
         f = open(filename, 'wb')
-        f.write(json.dumps(new_index, indent=1).encode('utf-8'))  # small indent for debugging purposes
+        f.write(json.dumps(new_index, sort_keys=True, indent=1).encode('utf-8'))  # small indent and sorted keys for debugging purposes
         f.close()
 
 
