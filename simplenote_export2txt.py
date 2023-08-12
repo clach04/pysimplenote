@@ -18,6 +18,7 @@ Possible future TODO items:
 """
 
 import datetime
+import email.utils
 import json
 import os
 import string
@@ -64,16 +65,35 @@ def safe_mkdir(newdir):
         else:
             raise
 
-def iso_like2datetime(datetime_str):
+def iso_like2datetime_local(datetime_str):
     """Partial ISO date format parsing, very limited.
     Focused on Simplenote timestamps format which are UTC / Zulu / GMT0 based.
-    Currently ignores microseconds and timezone...
-    For example:
-        iso_like2datetime("2022-06-27T01:39:12.602Z") == datetime.datetime(2022, 6, 27, 1, 39, 12)
-        iso_like2datetime("2012-02-22T15:15:19.602Z") == datetime.datetime(2012, 2, 22, 15, 15, 19)
+    For example; "2022-06-27T01:39:12.602Z" and "2012-02-22T15:15:19.602Z"
+    Returns relative to local timezone (what ever that maybe), no support for other timezones
     """
-    datetime_str = datetime_str.split('.', 1)[0]  # strip fractional seconds and UTC indicator
-    return datetime.datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S')
+    assert datetime_str.endswith('Z')  # FIXME add a check, this can be optimized out
+    datetime_str = datetime_str[:-1]  # strip UTC indicator
+    d = datetime.datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f')  # UTC relative datetime
+    # generate tuple like the one returned by email.utils.parsedate_tz()
+    # Daylight Saving Time flag is set to -1, since DST is unknown.
+    dst = -1
+    tz_offset = 0
+    date_tuple = d.year, d.month, d.day, d.hour, d.minute, d.second, d.microsecond, 1, dst,tz_offset  # UTC offset
+    utctimestamp = email.utils.mktime_tz(date_tuple)
+    return datetime.datetime.fromtimestamp(utctimestamp)
+
+def iso_like2secs(datetime_str):
+    """Partial ISO date format parsing, very limited.
+    Focused on Simplenote timestamps format which are UTC / Zulu / GMT0 based.
+    For example; "2022-06-27T01:39:12.602Z" and "2012-02-22T15:15:19.602Z"
+    """
+    assert datetime_str.endswith('Z')  # FIXME add a check, this can be optimized out
+    datetime_str = datetime_str[:-1]  # strip UTC indicator
+    d = datetime.datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f')  # UTC relative datetime
+    # generate tuple like the one returned by email.utils.parsedate_tz()
+    date_tuple = d.year, d.month, d.day, d.hour, d.minute, d.second, d.microsecond, 1, -1, 0  # UTC offset
+    utctimestamp = email.utils.mktime_tz(date_tuple)
+    return utctimestamp
 
 def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_filename=False, file_extension='txt', save_index=True):
     #import pdb ; pdb.set_trace()
@@ -102,16 +122,16 @@ def dict2txt(notes_dict, output_directory='notes_export_dir', use_first_line_as_
             filename = filename + '.' + file_extension
         filename = os.path.join(output_directory, filename)
         st_atime = time.time()  # current time for; Time of most recent access expressed in seconds.
-        last_modified = iso_like2datetime(note_entry['lastModified'])
-        st_mtime = time.mktime(last_modified.timetuple())  # Time of most recent content modification expressed in seconds.
+        st_mtime = iso_like2secs(note_entry['lastModified'])  # Time of most recent content modification expressed in seconds.
         if windows_set_create_time:
-            created_time = iso_like2datetime(note_entry['creationDate'])
+            created_time = iso_like2secs(note_entry['creationDate'])
         f = open(filename, 'wb')
         f.write(note_entry['content'].encode('utf-8'))
         f.close()
         # modify file timestamp(s)
         os.utime(filename, (st_atime, st_mtime))
         if windows_set_create_time:
+            #
             windows_set_create_time(filename, created_time)
         if save_index:
             del note_entry['content']
