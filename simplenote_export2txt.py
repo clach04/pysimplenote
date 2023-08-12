@@ -26,6 +26,7 @@ import sys
 import time
 from zipfile import ZipFile, ZIP_DEFLATED
 
+is_win = sys.platform.startswith('win')
 
 try:
     #python -m pip install pywin32 --upgrade
@@ -50,6 +51,9 @@ try:
 except ImportError:
     # Either not Windows or missing extensions
     windows_set_create_time = None
+    if is_win:
+        # TODO log warning
+        print('WARNING Windows, but missing pywin32, unable to set file creation time')
 
 
 import sanity_check_export
