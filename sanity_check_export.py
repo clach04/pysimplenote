@@ -202,11 +202,14 @@ def check_notes_dict(notes_dict):
         'lastModified',  # ISO/ANSI format string UTC
         #'markdown',  # Boolean - NOTE optional?
         #'tags',  # list/array of strings
+        #'collaboratorEmails',  # list/array of strings - emails
     ]
     if 'markdown' in note_keys:
         note_keys_expected.append('markdown')
     if 'tags' in note_keys:
         note_keys_expected.append('tags')
+    if 'collaboratorEmails' in note_keys:
+        note_keys_expected.append('collaboratorEmails')
     note_keys_expected.sort()
     assert note_keys_expected == note_keys, (note_keys_expected, note_keys)
 
