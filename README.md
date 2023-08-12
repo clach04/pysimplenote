@@ -44,9 +44,13 @@ Possible use cases:
   * perform diff across different backups/exports - for example; `diff -r`, WinMerge, Meld, etc.
   * find possible problem notes (duplicate titles/first lines and/or long/single-line notes)
 
-Under windows install pywin32
+Under windows install pywin32 to preserve file creation date
 
     python -m pip install pywin32 --upgrade
+
+Install Dulwich (git is NOT required) if exporting history to git:
+
+    pip install dulwich==0.19.16 --global-option="--pure"
 
 Example Usage:
 
@@ -55,6 +59,16 @@ Example Usage:
 
     python simplenote_json2yaml.py simplenote.json
     python simplenote_json2yaml.py simplenote.json use_first_line_as_filename
+
+Alternative options via operating system environment variables:
+
+        export SIMPLENOTE_READABLE_FILENAMES=true
+        export SIMPLENOTE_USE_GIT=true
+
+        env SIMPLENOTE_READABLE_FILENAMES=true SIMPLENOTE_USE_GIT=true python simplenote_export2txt.py export_filename
+
+        set SIMPLENOTE_READABLE_FILENAMES=true
+        set SIMPLENOTE_USE_GIT=true
 
 Then look for problem filenames:
 
