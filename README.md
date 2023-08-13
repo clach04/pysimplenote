@@ -79,6 +79,8 @@ Then look for problem filenames:
 
 #### Git notes
 
+##### Speed and sort order
+
 Git support is via Dulwich and is not super fast, also the initial repo will be large.
 Example, 3.2M json file, ends up as git repo + checkout of 48M. This repo pushed to a modern git server and re-cloned will be 8.6M as repo+checkout.
 
@@ -87,7 +89,19 @@ Same git import with git command line tool takes 37 seconds, repo+checkout is 49
 
 ALSO NOTE commit order is in file order (in json file), not last modified orded.
 
-Alternative, disable git support and use `import_files_to_git.py` to generate a script that will create the git repo with correct
+Alternative, disable git support and use `import_files_to_git.py` to generate a script that will create the git repo with correct order (which tools like GitJournal expect).
+
+##### gitignore
+
+Recommend creating a `.gitignore` file, contents something like:
+
+    *.bak
+    *~
+
+##### File mtime / last modified date / timestamp
+
+`git-restore-mtime` from https://github.com/MestreLion/git-tools is a Python3 script that can restore last modified (commit) times to files on file system.
+
 
 ### simplenote_json2yaml
 
