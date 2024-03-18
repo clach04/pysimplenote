@@ -121,4 +121,4 @@ Allows single file diff.
   * https://github.com/siviae/gitjournal-simplenote-exporter
     NOTE expects zip files ONLY (not json, like from Android).
     Problems:
-      * does not generate safe filenames (e.g. `/`)
+      * does not generate safe filenames (e.g. `/`) https://github.com/siviae/gitjournal-simplenote-exporter/issues/3
