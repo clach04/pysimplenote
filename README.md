@@ -123,6 +123,10 @@ Usage:
     # set OS var SIMPLENOTE_EXPORT_FILENAME to output filename, defaults to simplenote_CURRENT_TIMESTAMP.json
     python files_to_simplenotesjson.py
 
+Example Unix/Linux:
+
+    env SIMPLENOTE_EXPORT_FILENAME=/tmp/simplenote.json python files_to_simplenotesjson.py
+
 ## Future / TODO ideas
 
   * https://github.com/clach04/pysimplenote/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement
