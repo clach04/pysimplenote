@@ -69,7 +69,7 @@ for filename in filenames:
 
 simplenotes_dict = {
     "activeNotes": notes,
-    #"trashedNotes": [],
+    "trashedNotes": [],  # NOTE required, web interface will silently crash if missing (error in debug console, but nothing in UI).
 }
 
 json_str = json.dumps(simplenotes_dict, indent=4)
