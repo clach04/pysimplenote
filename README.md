@@ -111,6 +111,18 @@ Convert/export json file to yaml with indents, sorted on id. Requires pyyaml:
 
 Allows single file diff.
 
+### files_to_simplenotesjson
+
+Generate a json file to be imported into SimpleNote based on directory of *.txt and *.md files in the current directory.
+
+  * expects each file to be utf8 encoded
+  * no (nested) subdirectories
+
+Usage:
+
+    # set OS var SIMPLENOTE_EXPORT_FILENAME to output filename, defaults to simplenote_CURRENT_TIMESTAMP.json
+    python files_to_simplenotesjson.py
+
 ## Future / TODO ideas
 
   * https://github.com/clach04/pysimplenote/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement
