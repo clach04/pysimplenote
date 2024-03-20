@@ -43,7 +43,8 @@ def filename_to_entry(filename):
     f = open(filename, 'rb')
     binary_data = f.read()
     f.close()
-    note_content = binary_data.decode('utf-8')  # TODO other options
+    note_content = binary_data.decode('utf-8')  # TODO other encoding options
+    # TODO newline translation needed here? expected to be Windows "\r\n". Simplenote.com seems to accept Unix newlines.
  
     result = {
       "id": "%s" % uuid.uuid4(),  # 32-byte UUID, with or without hypens/dashes - could use md5sum
