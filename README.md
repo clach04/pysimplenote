@@ -140,3 +140,5 @@ Example Unix/Linux:
     NOTE expects zip files ONLY (not json, like from Android).
     Problems:
       * does not generate safe filenames (e.g. `/`) https://github.com/siviae/gitjournal-simplenote-exporter/issues/3
+   
+  * https://github.com/clach04/quillpad_conversion for Quillpad (nee Quillnote)
