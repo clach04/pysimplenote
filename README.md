@@ -2,7 +2,7 @@
 
 Home page https://github.com/clach04/pysimplenote
 
-Python tools / library for working with Simplenote by Automattic
+Python tools / library for working with Automattic's Simplenote.
 
 Tools for working with:
 
@@ -84,8 +84,10 @@ Then look for problem filenames:
 Git support is via Dulwich and is not super fast, also the initial repo will be large.
 Example, 3.2M json file, ends up as git repo + checkout of 48M. This repo pushed to a modern git server and re-cloned will be 8.6M as repo+checkout.
 
-One one machine that same json file takes 0.6 seconds to extract, with Dulwich git enabled takes 6 mins and 17 seconds.
-Same git import with git command line tool takes 37 seconds, repo+checkout is 49M.
+On one machine same json file:
+  * plain text extract takes 0.6 seconds to extract
+  * with Dulwich git enabled takes 6 mins and 17 seconds.
+  * Same git import with git command line tool takes 37 seconds, repo+checkout is 49M.
 
 ALSO NOTE commit order is in file order (in json file), not last modified orded.
 
