@@ -2,7 +2,8 @@
 # -*- coding: us-ascii -*-
 # vim:ts=4:sw=4:softtabstop=4:smarttab:expandtab
 #
-# For each *.txt file in directory create git add/commit script that uses the file last modified date/time to commit to a git repo (in time order)
+# For each *.txt file in single/flat directory create git add/commit script that uses the file last modified date/time to commit to a git repo (in time order)
+# Also see related script simplenote_export2txt.py, which exports from a simplenote export directly into a (new) git repo, with timestamps using Dulwich (git implementation)
 # Copyright (C) 2023 Chris Clark - clach04
 
 import datetime

@@ -3,6 +3,7 @@
 # vim:ts=4:sw=4:softtabstop=4:smarttab:expandtab
 #
 # Convert json export to text files for easier diff/sync with traditional file based tools
+# Can import into git, also see related script import_files_to_git.py
 # Copyright (C) 2023 Chris Clark - clach04
 """Only dumps active notes, not trashed/deleted notes
 
