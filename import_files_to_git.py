@@ -53,9 +53,10 @@ def main(argv=None):
         if file_op == MODIFIED:
             # file was modified (at least once) since creation, want to reflect that in git history but have no way to reflect that (built-in to git)
             # Options:
-            # 1. for now delete and re-add
-            # 2. https://github.com/przemoc/metastore - NOTE no create time support (as that's a Windows concept, not Unix)
-            # 3. https://gist.github.com/andris9/1978266 - NOTE no create time support (as that's a Windows concept, not Unix)
+            # 1. --allow-empty flag to commit
+            # 2. delete and re-add
+            # 3. https://github.com/przemoc/metastore - NOTE no create time support (as that's a Windows concept, not Unix)
+            # 4. https://gist.github.com/andris9/1978266 - NOTE no create time support (as that's a Windows concept, not Unix)
         """
         # Use --allow-empty for potentially unchanged files (the add is going to essentially be ignored by git)
         # NOTE "git log" will show this, BUT "git log FILENAME" will only show the real changes (i.e. initial)
