@@ -34,14 +34,21 @@ def generate_import_into_git_script(filename_list, comment_prefix=None):
 
     times_and_filenames = []
     for filename in filename_list:
-        #print('%r' % filename)
+        print('%s %r' % (comment_prefix, filename))
+        if os.path.isdir(filename):
+            continue
+        # do not attempt to handle soft links, hard links, assume regular files
         fd = os.open(filename, os.O_RDONLY)
         file_status = os.fstat(fd)
         os.close(fd)
         # TODO add user controlled option to disable creation/modification detection (for Unix/Linux use cases)
         created_modified_times = [file_status.st_ctime, file_status.st_mtime]  # Under Microsoft Windows st_ctime is create time, Unix it is the time of the last metadata change
         created_modified_times.sort()
+        #print('%st%r' % (comment_prefix, created_modified_times))
         st_ctime, st_mtime = created_modified_times
+        if 1 > (st_ctime - st_mtime):  # could make this more than one second
+            st_mtime = st_ctime
+        #print('%st%r' % (comment_prefix, st_ctime - st_mtime))
         times_and_filenames.append((st_ctime, filename, CREATED))
         if st_ctime != st_mtime:
             times_and_filenames.append((st_mtime, filename, MODIFIED))
@@ -82,7 +89,9 @@ def main(argv=None):
     filenames = []
     f = open(filename_containing_filenames)  # assume strings for now...
     for line in f:
-        filenames.append(line)
+        line = line.strip()  # Assume filenames do NOT have trailing whitespaces
+        if line:
+            filenames.append(line)
     f.close()
     generate_import_into_git_script(filenames)
 
