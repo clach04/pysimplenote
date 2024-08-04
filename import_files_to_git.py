@@ -33,6 +33,7 @@ def main(argv=None):
         fd = os.open(filename, os.O_RDONLY)
         file_status = os.fstat(fd)
         os.close(fd)
+        # TODO add user controlled option to disable creation/modification detection (for Unix/Linux use cases)
         created_modified_times = [file_status.st_ctime, file_status.st_mtime]  # Under Microsoft Windows st_ctime is create time, Unix it is the time of the last metadata change
         created_modified_times.sort()
         st_ctime, st_mtime = created_modified_times
