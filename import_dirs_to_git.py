@@ -56,6 +56,7 @@ def generate_import_into_git_script(filename_list, comment_prefix=None):
     times_and_filenames.sort()  # sort by timestamp
     #print('%s' % json.dumps(times_and_filenames, indent=4))  # DEBUG
     # Generate shell / batch script to stdout - assume now unicode filenames for Windows
+    print('%s git init --separate-git-dir ../test_git.git' %(comment_prefix, ))
     print('git init')
     for timestamp, filename, file_op in times_and_filenames:
         print('%s %s' % (comment_prefix, datetime.datetime.fromtimestamp(timestamp)))
