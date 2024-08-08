@@ -85,10 +85,15 @@ def main(argv=None):
         argv = sys.argv
 
     # TODO 1 - take in a list of file names (command line parameter, or better a file with line per file - use fd or find to generate this file contents)
-    # TODO 2 - directory name (potentially current working directory) and recursively walk it
+    #   fd / find
+    #   filter with:
+    #       grep -v \.bak ...
+    #       findstr -i -v \.bak ...
+    # TODO 2 - directory name (potentially current working directory) and recursively walk it, ignoring; *.bak, *~, etc.
     filename_containing_filenames = argv[1]
     filenames = []
-    f = open(filename_containing_filenames)  # assume strings for now...
+    #f = open(filename_containing_filenames)  # assume (7-bit us-ascii) strings for now... this does break with cp1252 (and under Windows) due to calling git with name git command line does not understand properly
+    f = open(filename_containing_filenames, encoding='utf-8')  # assume (7-bit us-ascii) strings for now... this does break with cp1252
     for line in f:
         line = line.strip()  # Assume filenames do NOT have trailing whitespaces
         if line:
