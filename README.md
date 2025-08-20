@@ -141,4 +141,5 @@ Example Unix/Linux:
     Problems:
       * does not generate safe filenames (e.g. `/`) https://github.com/siviae/gitjournal-simplenote-exporter/issues/3
    
-  * https://github.com/clach04/quillpad_conversion for Quillpad (nee Quillnote)
+  * https://github.com/clach04/quillpad_conversion for [Quillpad](https://github.com/quillpad/quillpad) (nee Quillnote)
+  * https://github.com/clach04/notally_conversion - Conversion tools for [Notally](https://github.com/OmGodse/Notally) notes
